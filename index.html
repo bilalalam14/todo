@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Todo List</title>
+</head>
+
+<style>
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: Verdana, Geneva, Tahoma, sans-serif;
+    }
+
+    .container {
+        width: 100%;
+        min-height: 100vh;
+        background: linear-gradient(135deg, teal, #00FFFF);
+        padding: 10px;
+    }
+
+    .todoApp {
+        position: relative;
+        width: 100%;
+        max-height: 450px;
+        overflow-y: auto;
+        max-width: 540px;
+        background: white;
+        margin: 100px 25% 20px;
+        padding: 40px 30px 70px;
+        border-radius: 10px;
+        box-shadow: rgba(0, 0, 0, 0.25) 0px 54px 55px, rgba(0, 0, 0, 0.12) 0px -12px 30px, rgba(0, 0, 0, 0.12) 0px 4px 6px, rgba(0, 0, 0, 0.17) 0px 12px 13px, rgba(0, 0, 0, 0.09) 0px -3px 5px;
+        z-index: 10000000000;
+    }
+
+    .todoApp h2 {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        color: teal;
+        margin-bottom: 20px;
+
+    }
+
+    .row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        background: teal;
+        border-radius: 15px;
+        padding-left: 20px;
+        margin-bottom: 25px;
+    }
+
+    input {
+        flex: 1;
+        border: none;
+        outline: none;
+        background: transparent;
+        padding: 10px;
+        color: white;
+    }
+
+    ::placeholder {
+        color: white;
+    }
+
+    button {
+        border: none;
+        outline: none;
+        padding: 10px 30px;
+        margin: 5px;
+        background: whitesmoke;
+        color: teal;
+        font-size: 16px;
+        cursor: pointer;
+        border-radius: 10px;
+    }
+
+    ul li {
+        list-style: none;
+        font-size: 16px;
+        padding: 12px 8px 12px 50px;
+        user-select: none;
+        position: relative;
+    }
+
+    ul li::before {
+        content: "";
+        position: absolute;
+        height: 24px;
+        width: 28px;
+        top: 12px;
+        left: 8px;
+        border-radius: 20%;
+        background-image: url("./wip.jpg");
+        background-size: cover;
+        background-position: center;
+    }
+
+    ul li.checked {
+        text-decoration: line-through;
+        color: teal;
+    }
+
+    ul li.checked::before {
+        background-image: url("./tick.png");
+    }
+
+    ul li:hover {
+        cursor: pointer;
+    }
+
+    span {
+        position: absolute;
+        right: 0;
+        line-height: 20px;
+    }
+
+    span img {
+        width: 20px;
+        height: 20px;
+        cursor: pointer;
+    }
+
+    span:hover {
+        color: red;
+    }
+
+    .flower {
+        position: absolute;
+        left: 10%;
+        bottom: 10%;
+        width: 200px;
+    }
+
+    .grass {
+        position: absolute;
+        bottom: 0;
+        width: 900px;
+        z-index: 9999;
+    }
+    .grass1 {
+        position: absolute;
+        bottom: 0;
+        right: 0;
+        width: 900px;
+        z-index: 9999;
+    }
+
+    .grass2 {
+        position: absolute;
+        bottom: 0;
+        right: 30%;
+        width: 900px;
+        z-index: 9999;
+    }
+
+    #clock {
+        font-size: 3em;
+        position: absolute;
+        left: 5%;
+        top: 5%;
+        color: white;
+        padding: 15px;
+        box-shadow: rgba(0, 0, 0, 0.16) 0px 10px 36px 0px, rgba(0, 0, 0, 0.06) 0px 0px 0px 1px;
+    }
+    .tree{
+        position: absolute;
+        bottom: 0;
+        right: 0;
+        width: 700px;
+
+    }
+</style>
+
+<body>
+
+    <div class="container">
+        <div id="clock"></div>
+        <img class="tree" src="./tree.png" alt="">        
+        <img class="grass" src="./grass.png" alt="">        
+        <img class="grass2" src="./grass.png" alt="">        
+        <img class="grass1" src="./grass.png" alt="">        
+        <img class="flower" src="./flower.png" alt="">
+        <div class="todoApp">
+            <h2>To-Do List</h2>
+            <div class="row">
+                <input type="text" id="inputBox" placeholder="Add your note">
+                <button onclick="addTask()">Add</button>
+            </div>
+            <ul id="listContainer">
+                <!-- <li class="checked">Task 1</li>
+                <li>Task 2</li>
+                <li>Task 3</li> -->
+
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        const inputBox = document.querySelector("#inputBox")
+        const listContainer = document.querySelector("#listContainer")
+        function addTask() {
+            if (inputBox.value === "") {
+                alert("You have not descibed your task")
+            } else {
+                let li = document.createElement("li");
+                li.innerHTML = inputBox.value
+                listContainer.appendChild(li)
+                let span = document.createElement("span")
+                span.innerHTML = "Delete"
+                li.appendChild(span)
+                inputBox.value = ""
+                saveData();
+            }
+        }
+
+        inputBox.addEventListener("keypress", function (event) {
+            if (event.key === "Enter") {
+                addTask()
+            }
+        })
+
+        listContainer.addEventListener("click", function (e) {
+            if (e.target.tagName === "LI") {
+                e.target.classList.toggle("checked");
+                saveData();
+            } else if (e.target.tagName === "SPAN") {
+                e.target.parentElement.remove();
+                saveData();
+            }
+        });
+
+        function saveData() {
+            localStorage.setItem("data", listContainer.innerHTML)
+        }
+        function showTask() {
+            listContainer.innerHTML = localStorage.getItem("data")
+        }
+        showTask()
+
+        // clock
+        function updateClock() {
+            const now = new Date();
+            const hours = now.getHours().toString().padStart(2, '0');
+            const minutes = now.getMinutes().toString().padStart(2, '0');
+            const seconds = now.getSeconds().toString().padStart(2, '0');
+
+            const clockDisplay = `${hours}:${minutes}:${seconds}`;
+            document.getElementById('clock').innerText = clockDisplay;
+        }
+
+        function updateClockEverySecond() {
+            updateClock();
+            setInterval(updateClock, 1000);
+        }
+
+        updateClockEverySecond();
+
+    </script>
+
+</body>
+
+</html>
